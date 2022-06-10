@@ -20,6 +20,10 @@ function Post({post}: Props) {
 
     const { register, handleSubmit, formState: {errors}, } = useForm<iFormInput>();
 
+    const onSubmit: SubmitHandler<iFormInput> = async(data) => {
+        console.log(data)
+    }
+
   return (
     <main>
         <Header />
@@ -59,7 +63,7 @@ function Post({post}: Props) {
 
         <hr className='max-w-lg my-5 mx-auto border border-blue-500' />
 
-        <form className='flex flex-col p-5 max-w-2xl mx-auto'>
+        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col p-5 max-w-2xl mx-auto'>
             <h3 className='text-sm text-blue-500'>enjoyed the article?</h3>
             <h4 className='text-3xl font-bold'>leave a comment below</h4>
             <hr className='py-3 mt-2' />
