@@ -65,5 +65,4 @@ export const getServerSideProps = async () => {
       posts,
     }
   }
-
 }
