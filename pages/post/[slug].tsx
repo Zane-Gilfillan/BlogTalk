@@ -2,6 +2,7 @@ import Header from '../../components/Header'
 import { GetStaticProps } from 'next';
 import { sanityClient, urlFor } from '../../sanity'
 import { Post } from '../../typings'
+import PortableText from 'react-portable-text'
 
 interface Props {
     post: Post;
@@ -19,6 +20,29 @@ function Post({post}: Props) {
             <div className='flex items-center space-x-2'>
                 <img className='h-10 w-10 rounded-full' src={urlFor(post.author.image).url()!} alt="" />
                 <p className='font-extralight text-sm'> article by <span className='text-blue-600'>{post.author.name}</span> published at {new Date(post._createdAt).toLocaleString()}</p>
+            </div>
+
+            <div>
+                <PortableText dataset={process.env.NEXT_PUBLIC_SANITY_DATASET!} 
+                projectId={process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!}
+                content={post.body}
+                serializers={{
+                h1:(props : any) => (
+                <h1 className='text-2xl font-bold my-5' {...props} /> 
+                ),
+                h2:(props : any) => (
+                <h2 className='text-xl font-bold my-5' {...props} />
+                ),
+                li:({children} : any) => (
+                <li className='ml-4 list-disc'> {children}</li>
+            ),
+            link:({href, children}: any) => (
+                <a href={href} className="text-blue-500 hover:underline">
+                {children}
+                </a>
+            ),
+            }}
+           />
             </div>
         </article>
     </main>
