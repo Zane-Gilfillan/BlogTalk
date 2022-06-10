@@ -1,30 +1,69 @@
-import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
+import Link from 'next/link';
+import Banner from '../components/Banner';
+import Posts from '../components/Posts';
 import Header from '../components/Header'
+import {sanityClient, urlFor} from "../sanity"
+import { Post } from '../typings';
 
-const Home: NextPage = () => {
+interface Props {
+  posts: [Post];
+}
+
+export default function Home ({posts}: Props) {
+  console.log(posts)
   return (
     <div className="max-w-7xl mx-auto">
       <Head>
-        <title>blogtalk</title>
+        <title>Medium 2.0</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <Header />
+      <Banner />
+      
+      {/* posts */}
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
+       {posts.map(post => (
+         <Link key={post._id} href={`/post/${post.slug.current}`} >
+          <div className=''>
+            <img src={urlFor(post.mainImage).url()!} alt="" />
+            <div className='flex justify-between p-5'>
+              <div>
+                <p>{post.title}</p>
+                <p>{post.description} by {post.author.name}</p>
+              </div>
 
-      <div className='flex justify-between items-center border-y border-black py-10 lg:py-0'>
-        <div className='px-10 space-y5'>
-          <div>
-            <h1 className='text-6xl max-w-xl font-serif'><span className='underline decoration-red-500 decoration-5'>blogtalk</span> is a place to write, read, and connect</h1>
-            <h2>Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem culpa est dolore vitae expedita, ut velit itaque?</h2>
+              <img className='h-12 w-12 rounded-full' src={urlFor(post.author.image).url()!} alt="" />
+            </div>
+           
           </div>
-          
-        </div>
-        <img className='hidden md:inline-flex h-32 lg:h-full' src='https://i.pinimg.com/736x/59/d9/2b/59d92b8d917c0fc6d1bc847f056dce5b.jpg'></img>
+         </Link>
+       ))}
       </div>
+
     </div>
   )
 }
 
-export default Home
+export const getServerSideProps = async () => {
+   
+  const query = `*[_type == "post"] {
+    _id,
+    title,
+    author-> {
+     name,
+     image
+    },
+    description,
+    mainImage,
+    slug
+  }`;
+  const posts = await sanityClient.fetch(query);
+  return{
+    props: {
+      posts,
+    }
+  }
+
+}
