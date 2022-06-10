@@ -132,7 +132,35 @@ function Post({post}: Props) {
             </form>
         )}
 
-        
+        <div className='flex flex-col p-10 my-10 max-w-2xl mx-auto shadow-blue-500 shadow'>
+          <h3 className='text-4xl pb-2'>Comments</h3>
+          <hr className='pb-2' />
+         
+            {post.comments.map((comment) =>(
+            <div className='w-full max-w-screen-sm m-auto p-3 min-h-100 overflow-hidden' key={comment._id}>
+                <div className='wrapper bg-white flex flex-row p-3 round-3xl shadow-md'>
+                    <div className='w-5/6 flex-grow-0'>
+                        <div className='pl-3 text-gray-500'>
+                            <div className='written-by uppercase text-gray-400 tracking-wide text-sm'>
+                                written by
+                            </div>
+                            <div className='name font-bold py-1'>
+                                {comment.name}
+                            </div>
+                            <div className='text-sm'>
+                                <p>
+                                    {comment.comment}
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                
+            </div>
+        ))}
+      </div>
     </main>
   )
 }
