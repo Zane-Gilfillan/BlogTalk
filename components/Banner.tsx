@@ -11,7 +11,7 @@ function Banner() {
           </div>
           
         </div>
-        <img className='hidden md:inline-flex h-32 lg:h-full' src='https://i.pinimg.com/736x/59/d9/2b/59d92b8d917c0fc6d1bc847f056dce5b.jpg'></img>
+        <img className='hidden md:inline-flex h-64 lg:h-64' src='https://i.pinimg.com/736x/59/d9/2b/59d92b8d917c0fc6d1bc847f056dce5b.jpg'></img>
       </div>
     </div>
     
