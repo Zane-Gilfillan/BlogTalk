@@ -2,13 +2,24 @@ import Header from '../../components/Header'
 import { GetStaticProps } from 'next';
 import { sanityClient, urlFor } from '../../sanity'
 import { Post } from '../../typings'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import PortableText from 'react-portable-text'
+
+interface iFormInput {
+    _id: string;
+    name: string;
+    email: string;
+    comment: string;
+}
 
 interface Props {
     post: Post;
 }
 
 function Post({post}: Props) {
+
+    const { register, handleSubmit, formState: {errors}, } = useForm<iFormInput>();
+
   return (
     <main>
         <Header />
@@ -22,7 +33,7 @@ function Post({post}: Props) {
                 <p className='font-extralight text-sm'> article by <span className='text-blue-600'>{post.author.name}</span> published at {new Date(post._createdAt).toLocaleString()}</p>
             </div>
 
-            <div>
+            <div className='mt-10'>
                 <PortableText dataset={process.env.NEXT_PUBLIC_SANITY_DATASET!} 
                 projectId={process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!}
                 content={post.body}
@@ -45,6 +56,57 @@ function Post({post}: Props) {
            />
             </div>
         </article>
+
+        <hr className='max-w-lg my-5 mx-auto border border-blue-500' />
+
+        <form className='flex flex-col p-5 max-w-2xl mx-auto'>
+            <h3 className='text-sm text-blue-500'>enjoyed the article?</h3>
+            <h4 className='text-3xl font-bold'>leave a comment below</h4>
+            <hr className='py-3 mt-2' />
+
+            <input
+                {...register('_id')}
+                type="hidden"
+                name='_id'
+                value={post._id}
+            />
+
+            <label className='block mb-5'>
+                <span className='text-gray-700'>name</span>
+                <input
+                    {...register('name', {required: true})}
+                    className='shadow border rounded py-2 px-3 form-input mt-1 block w-full ring-blue-500 outline-none focus:ring' placeholder='john appleseed' type="text"
+                />
+            </label>
+            <label className='block mb-5'>
+                <span className='text-gray-700'>email</span>
+                <input
+                    {...register('email', {required: true})}
+                    className='shadow border rounded py-2 px-3 form-input mt-1 block w-full ring-blue-500 outline-none focus:ring' placeholder='johnappleseed@email.com' type="text"
+                    />
+            </label>
+            <label className='block mb-5'>
+                <span className='text-gray-700'>comment</span>
+                <textarea
+                    {...register('comment', {required: true})}
+                    className='shadow border rounded py-2 px-3 form-textarea mt-1 block w-full ring-blue-500 outline-none focus:ring' placeholder='be kind' rows={8} 
+                />
+            </label>
+
+            <div className='flex flex-col p-5'>
+                {errors.name && (
+                    <span className='text-red-500'>name is required</span>
+                )}
+                {errors.email && (
+                    <span className='text-red-500'>email is required</span>
+                )}
+                {errors.comment && (
+                    <span className='text-red-500'>comment is required</span>
+                )}
+            </div>
+            <input type="submit" className='shadow bg-blue-500 hover:bg-blue-400 focus:shadow-outline focus:outline-none text white font-bold py-2 px-4 rounded cursor-pointer' />
+
+        </form>
     </main>
   )
 }
