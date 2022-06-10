@@ -11,11 +11,10 @@ interface Props {
 }
 
 export default function Home ({posts}: Props) {
-  console.log(posts)
   return (
     <div className="max-w-7xl mx-auto">
       <Head>
-        <title>Medium 2.0</title>
+        <title>blogtalk</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -31,7 +30,7 @@ export default function Home ({posts}: Props) {
             <div className='flex justify-between p-5'>
               <div>
                 <p className='text-lg font-bold'>{post.title}</p>
-                <p className='text-xs'>{post.description} by {post.author.name}</p>
+                <p className='text-xs'>{post.description} by <span className='font-semibold'>{post.author.name}</span></p>
               </div>
 
               <img className='h-12 w-12 rounded-full' src={urlFor(post.author.image).url()!} alt="" />
