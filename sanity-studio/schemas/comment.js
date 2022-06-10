@@ -9,7 +9,7 @@ export default {
         },
         {
             title: 'approved',
-            name: 'approvied',
+            name: 'approved',
             type: 'boolean',
             description: "comments won't show on the site without approval"
         },
