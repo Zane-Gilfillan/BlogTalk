@@ -7,7 +7,7 @@ function Header() {
         
         <div className='flex items-center space-x-5'>
             <Link href='/'>
-                <img className='w-44 object-contain cursor-pointer' src="https://miro.medium.com/max/8978/1*s986xIGqhfsN8U--09_AdA.png" alt="" />
+                <h1 className='text-2xl font:bold italic cursor-pointer tracking-wide'>blogtalk.</h1>
             </Link>
             <div className='hidden md:inline-flex items-center space-x-5'>
                 <h3>about</h3>
