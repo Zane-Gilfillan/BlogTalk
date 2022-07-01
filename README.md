@@ -90,3 +90,20 @@ return {
 this enables ISR and says after 60 seconds we'll update the old cache.
 
 you can read about ISR further here: https://nextjs.org/docs/basic-features/data-fetching/incremental-static-regeneration
+
+# comments
+
+![comment section](public/readme/cs.png)
+
+there is also full comment functionality that will only serve the comment if there is approval from devs.
+
+```
+export default async function createComment(
+    req: NextApiRequest,
+    res:NextApiResponse
+)
+```
+
+# stop by and say hello!
+
+https://www.blog-talk.com/
