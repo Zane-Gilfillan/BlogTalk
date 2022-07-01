@@ -1,23 +1,92 @@
-# Next.js + Tailwind CSS Example
+# Blog Talk
+a minimally designed and dynamically built blog hosting site
 
-This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v3.0)](https://tailwindcss.com/blog/tailwindcss-v3) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
+![blogtalk](public/readme/bt.png)
 
-## Deploy your own
+# technologies 
+**next.js** <br>
+**sanity.io**<br>
+**tailwind css**
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example) or preview live with [StackBlitz](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-tailwindcss)
+# The Meat & Potatoes
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-tailwindcss&project-name=with-tailwindcss&repository-name=with-tailwindcss)
+the real meat and potatoes is in the [slug.tsx] file<br>
 
-## How to use
+this is telling next.js what posts already exist so it can prebuild our pages by using ```getStaticProps()```
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init), [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/), or [pnpm](https://pnpm.io) to bootstrap the example:
+```
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+    const query = `*[_type == "post" && slug.current == $slug][0]{
+        _id,
+        _createdAt,
+        title,
+        author-> {
+            name,
+            image
+        },
+        'comments' : *[_type == "comment" &&
+          post._ref == ^._id &&
+          approved== true],
+        description,
+        mainImage,
+        slug,
+        body
+    }`;
 
-```bash
-npx create-next-app --example with-tailwindcss with-tailwindcss-app
-# or
-yarn create next-app --example with-tailwindcss with-tailwindcss-app
-# or
-pnpm create next-app --example with-tailwindcss with-tailwindcss-app
+    const post = await sanityClient.fetch(query, {
+        slug: params?.slug,
+    })
+
+    if (!post) {
+        return {
+            notFound: true
+        }
+    }
+
+    return {
+        props: {
+            post,
+        },
+        revalidate: 60,
+    }
+}
+```
+now when next.js trys to prepare a page it has to know which slug or id to grab in order to prepare a post
+
+```
+export const getStaticPaths =async () => {
+    const query = `*[_type == "post"]{
+        _id,
+        slug {
+             current
+            }
+      }`;
+
+      const posts = await sanityClient.fetch(query);
+
+      const paths = posts.map((post: Post) => ({
+          params: {
+              slug: post.slug.current
+          }
+      }))
+
+      return {
+          paths,
+          fallback: 'blocking'
+      };
+};
+```
+in the first photo we also used:<br>
+
+```
+return {
+        props: {
+            post,
+        },
+        revalidate: 60,
+    }
 ```
 
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+this enables ISR and says after 60 seconds we'll update the old cache.
+
+you can read about ISR further here: https://nextjs.org/docs/basic-features/data-fetching/incremental-static-regeneration
